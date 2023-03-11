@@ -3,7 +3,7 @@ import numpy as np
 import random
 import string
 
-connect = sqlite3.connect('DiemSinhVien_Python_K2N2_test.db')
+connect = sqlite3.connect('DiemSinhVien_Python_K2N2.db')
 c = connect.cursor()
 
 c.execute('''DROP TABLE IF EXISTS "subject_student" ''')
@@ -11,8 +11,8 @@ c.execute('''DROP TABLE IF EXISTS "subject" ''')
 c.execute('''DROP TABLE IF EXISTS "student" ''')
 c.execute('''DROP TABLE IF EXISTS "class" ''')
 
-startGrade = 10
-endGrade = 12
+startGrade = 6
+endGrade = 9
 classRoom = 6
 c.execute('''
     CREATE TABLE IF NOT EXISTS "class" (
