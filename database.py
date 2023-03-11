@@ -1,23 +1,28 @@
 import sqlite3
 
-connect = sqlite3.connect('DiemSinhVien_Python_K2N2.db')
+connect = sqlite3.connect('DiemSinhVien_Python_K2N2_test.db')
 c = connect.cursor()
 
+
+c.execute('''DROP TABLE IF EXISTS "subject_student" ''')
+c.execute('''DROP TABLE IF EXISTS "subject" ''')
+c.execute('''DROP TABLE IF EXISTS "student" ''')
+c.execute('''DROP TABLE IF EXISTS "class" ''')
 c.execute('''
     CREATE TABLE IF NOT EXISTS "class" (
-        classId INTEGER  ,
+        classId INTEGER ,
         className varchar(10) NOT NULL,
         
-        PRIMARY KEY (classId)
+        PRIMARY KEY (classId AUTOINCREMENT)
     )
 ''')
 c.execute('''
     CREATE TABLE IF NOT EXISTS "student" (
-        studentId INTEGER  ,
+        studentId INTEGER ,
         studentName varchar(30) NOT NULL,
         classId int not null,
 
-        PRIMARY KEY (studentId),
+        PRIMARY KEY (studentId AUTOINCREMENT),
         FOREIGN KEY (classId) REFERENCES class(classId)
     )
 ''')
@@ -25,29 +30,31 @@ c.execute('''
     CREATE TABLE IF NOT EXISTS "subject" (
         subjectId INTEGER , 
         subjectName varchar(20) NOT NULL, 
-        PRIMARY KEY (subjectId)
+        
+        PRIMARY KEY (subjectId AUTOINCREMENT)
     )
 ''')
 listSubject = [
-    (1,"Toán"),
-    (2,"Văn"),
-    (3,"Tiếng Anh"),
-    (4,"Vật lý"),
-    (5,"Hóa học"),
-    (6,"Sinh học"),
-    (7,"Lịch sử"),
-    (8,"Địa lý"),
-    (9,"Giáo dục công dân"),
-    (10,"Thể dục")
+    ["Toán"],
+    ["Văn"],
+    ["Tiếng Anh"],
+    ["Vật lý"],
+    ["Hóa học"],
+    ["Sinh học"],
+    ["Lịch sử"],
+    ["Địa lý"],
+    ["Giáo dục công dân"],
+    ["Thể dục"]
 ]
-# c.executemany('''INSERT INTO "subject" VALUES (?, ?)''', listSubject)
+c.executemany('''INSERT INTO "subject"("subjectName") VALUES (?)''', listSubject)
 c.execute('''
     CREATE TABLE IF NOT EXISTS "subject_student" (
         "subjectId"	int NOT NULL,
         "studentid"	int NOT NULL,
         "subjectGrade"	smallint NOT NULL,
+        
         FOREIGN KEY("subjectId") REFERENCES "subject"("subjectId"),
-        UNIQUE("studentId"),
+        FOREIGN KEY("studentid") REFERENCES "student"("studentid"),
         PRIMARY KEY("subjectId","studentid")
     )
 ''')
