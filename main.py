@@ -77,7 +77,7 @@ def home():
                         <li>pandas: </li>
                     </ul>
                 </ul>
-                <li>A????? Hoàng Chí Hiếu</li>
+                <li>A41174 Hoàng Chí Hiếu</li>
                 <ul>
                     <li> GET:</li>
                     <ul>
