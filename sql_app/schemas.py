@@ -2,12 +2,17 @@ from typing import Union
 from pydantic import BaseModel
 
 class ClassBase(BaseModel):
-    className: Union[str, None] = None
-    classGrade: Union[str, None] = None
+    className: str
+    classGrade: int
     
 class ClassCreate(ClassBase):
     pass
-    
+
+class ClassStudent(ClassBase):
+    id: int
+    class Config:
+        orm_mode = True
+            
 class SubjectBase(BaseModel):
     subjectName: str
     
@@ -16,7 +21,7 @@ class SubjectCreate(SubjectBase):
 
 class StudentBase(BaseModel):
     studentName: str
-    classIn : int
+    classIn: int
 
 class StudentCreate(StudentBase):
     pass
@@ -29,13 +34,8 @@ class SubjectStudentPointCreate(SubjectStudentPointBase):
     point: float
     class Config:
         orm_mode = True
-    
-class ClassStudent(ClassBase):
-    id: int
-    class Config:
-        orm_mode = True
 
-class Suject(SubjectBase):
+class SujectAll(SubjectBase):
     id: int
     class Config:
         orm_mode = True    

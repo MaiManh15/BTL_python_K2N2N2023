@@ -6,27 +6,116 @@ import pandas as pd
 import sql_app.models as models
 import sql_app.schemas as schemas
 import sql_app.data as data
-from database import SessionLocal, engine
+from database import SessionLocal, engine, get_db
+from sql_app.default import initDef 
+from fastapi.responses import HTMLResponse
 
-models.Base.metadata.create_all(bind=engine) 
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+# initDef()
 
-@app.get('/')
+@app.get('/', response_class=HTMLResponse)
 def home():
-    return "welcome BTL_Python"
+    html_content = '''
+    <html>
+        <head>
+            <title>Welcome BTL Python</title>
+        </head>
+        <body>
+            <h1>Bài tập lớn môn Lập trình Python</h1>
+            <br> </br>
+            <div>
+                <h2>Nhóm gồm 4 thành viên:</h2>
+                <ul>
+                    <li>A38253 Nguyễn Hoàng Đức Anh</li>
+                    <li>A38520 Mai Văn Mạnh</li>
+                    <li>A38911 Vũ Tiến Dũng</li>
+                    <li>A41174 Hoàng Chí Hiếu</li>
+                </ul>
+            </div>
+            <br> </br>
+            <div> 
+                <h2>Đề tài: Quản lý điểm học sinh</h2>
+                <h3>Phân công công việc:</h3>
+                <li>A38253 Nguyễn Hoàng Đức Anh</li>
+                <ul>
+                    <li> GET:</li>
+                    <ul>
+                        <li>numpy: </li>
+                        <li>pandas: </li>
+                    </ul>
+                    <li> POST:</li>
+                    <ul>
+                        <li>numpy: </li>
+                        <li>pandas: </li>
+                    </ul>
+                </ul>
+                <li>A38520 Mai Văn Mạnh</li>
+                <ul>
+                    <li> GET:</li>
+                    <ul>
+                        <li>numpy: </li>
+                        <li>pandas: </li>
+                    </ul>
+                    <li> POST:</li>
+                    <ul>
+                        <li>numpy: </li>
+                        <li>pandas: </li>
+                    </ul>
+                </ul>         
+                <li>A38911 Vũ Tiến Dũng</li>
+                <ul>
+                    <li> GET:</li>
+                    <ul>
+                        <li>numpy: </li>
+                        <li>pandas: </li>
+                    </ul>
+                    <li> POST:</li>
+                    <ul>
+                        <li>numpy: </li>
+                        <li>pandas: </li>
+                    </ul>
+                </ul>
+                <li>A????? Hoàng Chí Hiếu</li>
+                <ul>
+                    <li> GET:</li>
+                    <ul>
+                        <li>numpy: </li>
+                        <li>pandas: </li>
+                    </ul>
+                    <li> POST:</li>
+                    <ul>
+                        <li>numpy: </li>
+                        <li>pandas: </li>
+                    </ul>
+                </ul>
+            </div>
 
-@app.get('/class')
-def get_class(id: Union[str, None] = None, name: Union[str, None] = None, grade: Union[int, None] = None ,db: Session = Depends(get_db)):
-    
-    return data.ClassroomMethod.get_class(db, id, name, grade)
-@app.post('/class', response_model=schemas.ClassBase)
-def create_class(classroom: schemas.ClassBase, db: Session = Depends(get_db)):
-    return data.ClassroomMethod.create_class(db, classroom)
+        </body>
+    </html>
+    '''
+    return HTMLResponse(content=html_content, status_code=200)
+
+@app.get('/subject/DiemTongKetTrungBinhHocSinh')
+def get_class_point_subject(
+    studentid: Union[int, None] = None,
+    studentname: Union[str, None] = None,
+    db: Session = Depends(get_db)
+):
+    if( studentid != None or studentname != None):
+        studentInClass= data.SubjectAndStudentMethod.get_all_student(db, studentid=studentid, studentname=studentname);
+        df = pd.DataFrame.from_dict(studentInClass)
+        diemTrungBinh = np.round(df['Điểm'].sum() / len(df['Điểm'].to_list()), 1)
+        name = df['Họ và tên'][0]
+        return f'Điểm trung bình của {name} là: {diemTrungBinh}'
+    else: 
+        raise HTTPException(status_code=404, detail="Chưa có thông tin nào về học sinh được đưa ra (studentid: int, studentname: str)")
+
+# @app.post('/class', response_model = schemas.ClassBase)
+# def create_class(classroom: schemas.ClassBase, db: Session = Depends(get_db)):
+#     return data.ClassroomMethod.create_class(db, classroom)
+
+# @app.post('/subject', response_model = schemas.SubjectBase)
+# def create_subject(subject: schemas.SubjectBase, db: Session = Depends(get_db)):
+#     return data.SubjectMethod.create_subject(db, subject)

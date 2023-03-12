@@ -15,9 +15,9 @@ class Subject(Base):
     
     id = Column(Integer, primary_key=True, autoincrement=True, index=True, nullable=False)
     name = Column(String(50), nullable=False)
+    
     points = relationship("SubjectStudent", back_populates="subjectPoint")
     
-
 class Student(Base):
     __tablename__ = "student"
     id = Column(Integer, primary_key=True, autoincrement=True, index=True, nullable=False)
@@ -32,7 +32,7 @@ class SubjectStudent(Base):
     
     studentId = Column(Integer, ForeignKey("student.id"), primary_key=True, index=True, nullable=False)
     subjectId = Column(Integer, ForeignKey("subject.id"), primary_key=True, index= True, nullable=False)
-    grade = Column(REAL, nullable=False)
+    point = Column(REAL, nullable=False)
     
     studentPoint = relationship("Student", back_populates="points")
     subjectPoint = relationship("Subject", back_populates="points")
